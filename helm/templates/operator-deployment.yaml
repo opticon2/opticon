@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opticon-operator
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: opticon-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opticon-operator
+  template:
+    metadata:
+      labels:
+        app: opticon-operator
+    spec:
+      serviceAccountName: opticon-serviceaccount
+      containers:
+      - name: opticon-operator
+        image: "{{ .Values.operator.image }}:{{ .Values.operator.tag }}"
+        ports:
+        - containerPort: 80
+        env:
+          - name: NAMESPACE_DEPLOYMENTS
+            value: {{ .Values.namespace }}

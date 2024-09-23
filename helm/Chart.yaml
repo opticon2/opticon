@@ -1,0 +1,8 @@
+apiVersion: v2
+name: opticon-hub
+description: A hub for deploying streamlit apps
+version: 0.1.0
+appVersion: "1.0"
+
+type: application
+

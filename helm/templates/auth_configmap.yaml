@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-config
+  namespace: {{ .Values.namespace }}
+data:
+  KEYCLOAK_CLIENT_ID: {{ .Values.auth_config.KEYCLOAK_CLIENT_ID }}
+  KEYCLOAK_CLIENT_SECRET: {{ .Values.auth_config.KEYCLOAK_CLIENT_SECRET }}
+  KEYCLOAK_AUTHORITY: {{ .Values.auth_config.KEYCLOAK_AUTHORITY }}

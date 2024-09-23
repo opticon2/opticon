@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opticon-hub
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: opticon-hub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opticon-hub
+  template:
+    metadata:
+      labels:
+        app: opticon-hub
+    spec:
+      serviceAccountName: opticon-serviceaccount
+      containers:
+        - name: hub
+          image: "{{ .Values.hub.image }}:{{ .Values.hub.tag }}"
+          imagePullPolicy: {{ .Values.hub.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NAMESPACE_DEPLOYMENTS
+              value: {{ .Values.namespace }}
+            - name: STREAMLIT_SUFFIX
+              value: {{ .Values.streamlit_ingress.suffix }}
+            - name: STREAMLIT_BASE_DNS
+              value: {{ .Values.streamlit_ingress.base_dns }}
+            - name: GIT_SYNC_IMAGE_NAME
+              value: {{ .Values.git_sync.image }}
+            - name: GIT_SYNC_IMAGE_TAG
+              value: {{ .Values.git_sync.tag }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
